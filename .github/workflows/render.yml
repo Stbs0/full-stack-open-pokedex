@@ -1,3 +1,4 @@
+name: Rendder
 on:
   push:
     branches: [main, master]
