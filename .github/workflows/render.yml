@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_URL }}
