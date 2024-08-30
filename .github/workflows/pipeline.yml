@@ -35,12 +35,12 @@ jobs:
       - name: Debug COMMIT_MESSAGES and SKIP_CONDITION
         run: echo false "$SKIP_CONDITION"
       - name: checks
-        run: echo true ${{ github.env.SKIP_CONDITION == 'true' && github.event_name == 'push'  }}
+        run: echo true ${{ env.SKIP_CONDITION == 'true' && github.event_name == 'push'  }}
       - name: test
         run: echo true ${{ github.event_name == 'push' }}
   tag_release:
     needs: [build]
-    if: ${{ github.env.SKIP_CONDITION  && github.event_name == 'push'  }}
+    if: ${{ github.env.SKIP_CONDITION == 'true'  && github.event_name == 'push'  }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
