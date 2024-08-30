@@ -22,13 +22,10 @@ jobs:
         run: npm install
       - name: Check style
         run: npm run eslint
-      - name: Set SKIP_CONDITION Output
-        id: set_skip_condition
-        run: echo "::set-output name=skip_condition::${{ env.SKIP_CONDITION }}"
-    
+
   tag_release:
     needs: [build]
-    if: ${{ needs.build.outputs.skip_condition == 'true'  && github.event_name == 'push'  }}
+    if: ${{   github.event_name == 'push'  }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -49,7 +46,7 @@ jobs:
 
   deploy:
     needs: [build]
-    if: ${{ needs.build.outputs.skip_condition == 'true' && github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
