@@ -22,7 +22,8 @@ jobs:
       #   run: npm install
       # - name: Check style
       #   run: npm run eslint
-
+      - name: Build
+        run: echo ${{env.SKIP_CONDITION}}
   tag_release:
     needs: [build]
     if: ${{  github.env.SKIP_CONDITION == 'false' && github.event_name == 'push'  }}
@@ -46,7 +47,9 @@ jobs:
 
   deploy:
     needs: [build]
-    if: ${{ github.event_name == 'push' && github.env.SKIP_CONDITION == 'false' }}
+    env: 
+       SKIP_CONDITIONS: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+    if: ${{ github.event_name == 'push' && github.env.SKIP_CONDITIONS == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
