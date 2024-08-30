@@ -1,6 +1,6 @@
 name: Deployment pipeline
 env:
-  COMMIT_MESSAGES: ${{ fromJson(github.event.commits.*.message) }}
+  COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
   SKIP_CONDITION: ${{ !contains(join(github.env.COMMIT_MESSAGES, ' '), '#skip') }}
 on:
   push:
