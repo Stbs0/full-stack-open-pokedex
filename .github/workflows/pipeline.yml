@@ -33,6 +33,11 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - name: Debug COMMIT_MESSAGES and SKIP_CONDITION
+        run: |
+          echo "COMMIT_MESSAGES=${{ env.COMMIT_MESSAGES }}"
+          echo "SKIP_CONDITION=${{ env.SKIP_CONDITION }}"
+
   tag_release:
     needs: [build]
     if: ${{ github.env.SKIP_CONDITION == 'false' && github.event_name == 'push'  }}
