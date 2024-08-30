@@ -36,6 +36,8 @@ jobs:
         run: echo "$SKIP_CONDITION"
       - name: checks
         run: echo ${{ github.env.SKIP_CONDITION == 'false' && github.event_name == 'push'  }}
+      - name: test
+        run: echo ${{ github.event_name == 'push' }}
   tag_release:
     needs: [build]
     if: ${{ github.env.SKIP_CONDITION == 'false' && github.event_name == 'push'  }}
