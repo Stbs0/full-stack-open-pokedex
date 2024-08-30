@@ -24,8 +24,8 @@ jobs:
       - name: commit messages
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-          
+#gg
         run: echo "$COMMIT_MESSAGES"
-        
+
       - name: skipped
         run: echo ${{ env.SKIP_CONDITION }}
