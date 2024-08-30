@@ -1,7 +1,7 @@
 name: Deployment pipeline
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  SKIP_CONDITION: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+  SKIP_CONDITION: ${{ !contains(join(github.event.commits.*.message, ' '), '#skip') }}
 on:
   push:
     branches:
@@ -18,15 +18,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      # - name: Install dependencies
-      #   run: npm install
-      # - name: Check style
-      #   run: npm run eslint
-      - name: Build
-        run: echo ${{env.SKIP_CONDITION}}
+
+      - name: Debug SKIP_CONDITION
+        run: echo "SKIP_CONDITION ${{ env.SKIP_CONDITION }}"
+   test:
+    needs: [build]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Debug SKIP_CONDITION
+        run: echo "SKIP_CONDITION ${{ env.SKIP_CONDITION }}"
   tag_release:
     needs: [build]
-    if: ${{  github.env.SKIP_CONDITION == 'false' && github.event_name == 'push'  }}
+    if: ${{  github.env.SKIP_CONDITION == 'true' && github.event_name == 'push'  }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -47,9 +51,8 @@ jobs:
 
   deploy:
     needs: [build]
-    env: 
-       SKIP_CONDITIONS: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
-    if: ${{ github.event_name == 'push' && github.env.SKIP_CONDITIONS == 'false' }}
+
+    if: ${{ github.event_name == 'push' && github.env.SKIP_CONDITIONS  }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
