@@ -21,7 +21,7 @@ jobs:
 
       - name: Debug SKIP_CONDITION
         run: echo "SKIP_CONDITION ${{ env.SKIP_CONDITION }}"
-   test:
+  test:
     needs: [build]
     runs-on: ubuntu-20.04
     steps:
