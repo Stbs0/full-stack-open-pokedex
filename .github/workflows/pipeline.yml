@@ -31,9 +31,9 @@ jobs:
       #
       #
       - name: Debug COMMIT_MESSAGES and SKIP_CONDITION
-        run: |
-          printf "COMMIT_MESSAGES='%s'\n" "${{ env.COMMIT_MESSAGES }}"
-          printf "SKIP_CONDITION='%s'\n" "${{ env.SKIP_CONDITION }}"
+        run: echo "$COMMIT_MESSAGES"
+      - name: Debug COMMIT_MESSAGES and SKIP_CONDITION
+        run: echo "$SKIP_CONDITION"
 
   tag_release:
     needs: [build]
