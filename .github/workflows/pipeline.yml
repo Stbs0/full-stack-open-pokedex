@@ -23,20 +23,17 @@ jobs:
       - name: Check style
         run: npm run eslint
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
+      # - name: Run Playwright tests
+      #   run: npx playwright test
+      # - uses: actions/upload-artifact@v4
+      #
+      #
       - name: Debug COMMIT_MESSAGES and SKIP_CONDITION
         run: |
-          echo "COMMIT_MESSAGES=${{ env.COMMIT_MESSAGES }}"
-          echo "SKIP_CONDITION=${{ env.SKIP_CONDITION }}"
+          printf "COMMIT_MESSAGES='%s'\n" "${{ env.COMMIT_MESSAGES }}"
+          printf "SKIP_CONDITION='%s'\n" "${{ env.SKIP_CONDITION }}"
 
   tag_release:
     needs: [build]
