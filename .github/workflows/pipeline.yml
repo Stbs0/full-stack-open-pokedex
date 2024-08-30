@@ -54,21 +54,21 @@ jobs:
   deploy:
     needs: [build]
 
-    if: github.event_name == 'push' && github.env.SKIP_CONDITION == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: env.SKIP_CONDITION == 'true' && github.event_name == 'push'
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_URL }}
       - name: Test Success
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v1.0.4
         if: success()
         with:
           severity: info
           details: Deployed!
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Test Failure
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v1.0.4
         if: failure()
         with:
           severity: error
