@@ -11,7 +11,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -34,22 +34,45 @@ jobs:
           path: playwright-report/
           retention-days: 30
   tag_release:
-    needs: [simple_deployment_pipeline]
+    needs: [build]
     if: ${{ github.env.SKIP_CONDITION == 'true' && github.event_name == 'push'  }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.70.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: success()
+        with:
+          severity: info
+          details: merged with main and tagged!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
   deploy:
-    needs: [simple_deployment_pipeline]
+    needs: [build]
     if: ${{ github.env.SKIP_CONDITION == 'true' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_URL }}
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: success()
+        with:
+          severity: info
+          details: Deployed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: failure()
+        with:
+          severity: error
+          details: Failed deployment!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
