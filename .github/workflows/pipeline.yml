@@ -38,9 +38,11 @@ jobs:
         run: echo true ${{ env.SKIP_CONDITION == 'true' && github.event_name == 'push'  }}
       - name: test
         run: echo true ${{ github.event_name == 'push' }}
+      - name: github
+        run: echo true ${{ github.SKIP_CONDITION }}
   tag_release:
     needs: [build]
-    if: ${{ github.env.SKIP_CONDITION == 'true'  && github.event_name == 'push'  }}
+    if: ${{ github.SKIP_CONDITION == 'true'  && github.event_name == 'push'  }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
