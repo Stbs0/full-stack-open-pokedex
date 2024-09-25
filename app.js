@@ -11,7 +11,7 @@ app.get("/version", (_req, res) => {
 app.get("/health", (req, res) => {
   res.send("ok");
 });
-// joidjcfoijhiofjjef
+
 app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`);
 });
